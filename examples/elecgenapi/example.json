@@ -1,0 +1,17 @@
+{
+  "data": {
+    "from": "2019-08-02T09:00Z",
+    "to": "2019-08-02T09:30Z",
+    "generationmix": [
+      { "fuel": "biomass", "perc": 7.1 },
+      { "fuel": "coal", "perc": 0 },
+      { "fuel": "imports", "perc": 4.3 },
+      { "fuel": "gas", "perc": 53.8 },
+      { "fuel": "nuclear", "perc": 16.9 },
+      { "fuel": "other", "perc": 0.5 },
+      { "fuel": "hydro", "perc": 2.3 },
+      { "fuel": "solar", "perc": 12.3 },
+      { "fuel": "wind", "perc": 2.8 }
+    ]
+  }
+}
