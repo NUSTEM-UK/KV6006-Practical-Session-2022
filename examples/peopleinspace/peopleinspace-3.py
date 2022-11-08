@@ -1,38 +1,22 @@
-"""Query the 'People in Space' API.
-
-Based on code from Raspberry Pi project:
-https://projects.raspberrypi.org/en/projects/people-in-space-indicator
-
-Note that the data source is updated manually!
-http://open-notify.org/Open-Notify-API/People-In-Space/
-"""
-
 import requests
-from blinkt import set_pixel, set_brightness, show, clear
-from time import sleep
+from guizero import App, Text
 
-clear() # Clear the Blinkt HAT...
-show()  # ...and make it show nothing
+# Give ourselves an application window to put things in
+app = App(title="People iiiiin Spaaaaaace!", height=350)
 
+# Get the data and parse it as JSON
 r = requests.get('http://api.open-notify.org/astros.json')
-
-# Parse the response as JSON - example data in example.json
 data = r.json()
 
-# Iterate over the people element of the returned JSON
+# Write text into the GUI window
+message0 = Text(app, " ", height=2) # Spacer to push things down.
+message1 = Text(app, "Number of people in space: ", size=24)
+message2 = Text(app, data['number'], size=48, color='red')
+people_string = ""
 for person in data['people']:
-    print(person['name'])
+    people_string += person['name']
+    people_string += "\r" # Add a new line
+message3 = Text(app, people_string, size=14, color='blue')
 
-print("-----")
-print("Total people in space: ", data['number'])
-
-# Do some Blinkt! stuff
-for i in range(data['number']):
-    set_pixel(i, 255, 0, 0)
-    show()
-    sleep(0.1)
-
-# Make sure we turn off all the LEDs before exiting.
-sleep(3)
-clear()
-show()
+# Now show the window
+app.display()
