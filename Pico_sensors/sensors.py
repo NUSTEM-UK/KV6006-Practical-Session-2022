@@ -44,16 +44,15 @@ while True:
     temperature = 27 - (temp_reading - 0.706)/0.001721
 
     # Construct dictionary
-    sensor_data = { "sensor": {
+    sensor_data = { "sensors": [{
                         "name": "temperature",
                         "value": temperature}
-                    }
+                    ]}
     # print(sensor_data)
 
     # Send JSON data over MQTT
     client.publish(topic_pub, json.dumps(sensor_data))
     print("Published: " + str(sensor_data))
-
-
+    print(json.dumps(sensor_data))
 
     time.sleep(5)
