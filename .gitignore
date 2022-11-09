@@ -155,3 +155,4 @@ cython_debug/
 clientsecrets.py
 examples/weatherapi/clientsecrets.py
 secrets.py
+config.py
