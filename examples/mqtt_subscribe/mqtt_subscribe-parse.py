@@ -39,7 +39,7 @@ def on_log(mqttc, obj, level, string):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.on_log = on_log
+# client.on_log = on_log
 client.username_pw_set(config.mqtt_username, config.mqtt_password)
 
 try:

@@ -1,4 +1,4 @@
-# KV6003 practical session - 3 - MQTT
+# KV6006 practical session - 3 - MQTT
 
 Arguably, the core of Internet of Things systems is the message-passing protocol MQTT. The letters used to stand for something like 'Messasge Queue Telemetry Transport' but there was never really a 'queue'. Officially it's no longer even pretending to be an acronym.
 
@@ -31,7 +31,7 @@ def on_connect(client, userdata, flags, rc):
     """Callback for when mqtt client connects."""
     print("Connected with result code: " + str(rc))
     # For now, subscribe to the firehose
-    client.subscribe("/kv6003/#")
+    client.subscribe("/KV6006/#")
 
 def on_message(client, userdata, msg):
     """Callback for when mqtt client receives a message."""
@@ -66,7 +66,7 @@ If the connection drops the program will likely crash; in a real-world situation
 
 ## Parsing data received over MQTT
 
-You'll notice that the data you're receiving on the `KV6003/Sensors` topic is formatted as JSON. So you can expand your `on_message()` function to do something like:
+You'll notice that the data you're receiving on the `KV6006/Sensors` topic is formatted as JSON. So you can expand your `on_message()` function to do something like:
 
 ```python
 # [...]
@@ -113,11 +113,11 @@ payload = {"name:" "Bob",
            "data_value": 328}
 
 mqtt.connect(config.mqtt_server, config.mqtt_port, 60)
-mqtt.publish("KV6003/test", json.dumps(payload))
+mqtt.publish("KV6006/test", json.dumps(payload))
 ```
 
 You _could_ wrap the last two lines in a `try / except` block, but for our purposes today it's not terribly important. The `json.dump()` method handles converting the Python dictionary `payload` into JSON format for us.
 
 ## Putting it together
 
-You'll have noticed that the device on the `KV6003/Sensors` topic is sending JSON-formatted data, containing a list of sensors and their current values. So we can modify the `on_message()` function in our data
+You'll have noticed that the device on the `KV6006/Sensors` topic is sending JSON-formatted data, containing a list of sensors and their current values. So we can modify the `on_message()` function in our data

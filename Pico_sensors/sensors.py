@@ -56,6 +56,6 @@ while True:
     # Send JSON data over MQTT
     client.publish(topic_pub, json.dumps(sensor_data))
     print("Published: " + str(sensor_data))
-    print(json.dumps(sensor_data))
+    # print(json.dumps(sensor_data))
 
     time.sleep(5)

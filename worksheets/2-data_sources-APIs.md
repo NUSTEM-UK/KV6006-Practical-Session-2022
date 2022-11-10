@@ -1,4 +1,4 @@
-# KV6003 practical session - 2 - Data Source - APIs
+# KV6006 practical session - 2 - Data Source - APIs
 
 These exercises pull data from web sources, then... do something with it.
 
