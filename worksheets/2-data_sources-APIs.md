@@ -166,7 +166,7 @@ Run that, and after a few seconds (possibly _quite a few seconds_) you should ha
 
 ## Other APIs
 
-There are, of course, rather a lot of APIs out there. Two worth exploring are:
+There are, of course, rather a lot of APIs out there. **Some** worth exploring are:
 
 * OpenWeatherMap. [https://openweathermap.org/api](https://openweathermap.org/api). Terrific breadth and depth of data in a service that's free for the first 1000 API calls per day.
 * The 'people in space' guy also publishes data about the International Space Station: [http://open-notify.org/](http://open-notify.org).

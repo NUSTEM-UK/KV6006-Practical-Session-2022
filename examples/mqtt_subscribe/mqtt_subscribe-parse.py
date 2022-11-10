@@ -24,21 +24,22 @@ def on_message(client, userdata, msg):
         # so it's very easy to mess this up!
         print("Value: " + str(sensor['value']))
 
-    # if (topic.startswith("/KV6006/Sensors/ding")):
-    #     print("DING!")
+        # If the sensor is a temperature sensor, print the temperature
+        # in Fahrenheit as well.
+        if sensor['name'] == 'temperature':
+            print("Temperature in Fahrenheit: " + str(sensor['value'] * 9 / 5 + 32))
 
-def do_the_thing(incoming):
-    print(incoming)
-    incoming2 = '{"sensors": [{"name": "temperature", "value": 21.42667}]}'
-    # print(incoming2)
-    data = json.loads(incoming)
-    print(data)
+
+
+def on_log(mqttc, obj, level, string):
+    print(string)
 
 # Now we have our callback functions for connection and message receipt,
 # we can go ahead and make a connection.
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
+client.on_log = on_log
 client.username_pw_set(config.mqtt_username, config.mqtt_password)
 
 try:
