@@ -156,3 +156,4 @@ clientsecrets.py
 examples/weatherapi/clientsecrets.py
 secrets.py
 config.py
+arduino_secrets.h

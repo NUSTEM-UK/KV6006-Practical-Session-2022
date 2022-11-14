@@ -11,7 +11,6 @@ https://carbon-intensity.github.io/api-definitions/?python#generation
 
 import requests
 
-# r = requests.get('https://api.carbonintensity.org.uk/generation')
 r = requests.get('https://api.carbonintensity.org.uk/generation')
 
 # Parse the JSON response
