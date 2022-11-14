@@ -247,7 +247,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     // (it's destroyed when the callback is re-entered)
     // There's a chance a command won't be parsed, if the decode and action
     // isn't completed before the next message arrives. But the D1 is pretty quick,
-    // and queing commands just a little from the controller should prevent that from
+    // and queuing commands just a little from the controller should prevent that from
     // happening. So we'll leave it up to the controller.
     StaticJsonBuffer<256> jsonBuffer;
 
@@ -309,6 +309,33 @@ void callback(char* topic, byte* payload, unsigned int length) {
         // time_end = time_current + transitionTime;
     }
 
+    // Hack of setLEDhue to set all states for the whole strip
+    if (root["command"] == "LEDhue") {
+        int targetHue = root["value"];
+        // Output diagnostics to serial for debugging.
+        Serial.print("Setting LED hue to: ");
+        Serial.println(targetHue);
+        // THere's only one pixel in these skutters
+        int pixel_number = 0;
+
+        // Are we writing to state A or B?
+        int stateIndex;
+        if (state == "A") {
+            stateIndex = 1;
+        } else {
+            stateIndex = 2;
+        }
+
+        // Update all the everything
+        ledsHSV[pixel_number][1].hue = targetHue;
+        ledsHSV[pixel_number][2].hue = targetHue;
+        // ledsHSV[pixel_number][stateIndex].hue = targetHue;
+        // Serial.println(ledsHSV[pixel_number][stateIndex].hue);
+        // Now update the pixel hue interpolation for this state:
+        updateLEDgradient(1);
+        updateLEDgradient(2);
+    }
+
     if (root["command"] == "setBrightness") {
         Serial.println(">>> setBrightness command received!");
         targetBrightness = root["value"];
@@ -356,6 +383,26 @@ void callback(char* topic, byte* payload, unsigned int length) {
         // time_end = time_current + transitionTime;
     }
 
+    // Hack of setServoPosition for KV6006 purposes
+    if (root["command"] == "servoAngle") {
+        int servoNum = root["servoNum"];
+        float targetPosition = root["angle"];
+        // Output parsed structure to serial, for debugging
+        Serial.print("Set Servo: ");
+        Serial.print(servoNum);
+        Serial.print(" to position: ");
+        Serial.println(targetPosition);
+        // Now act on it.
+        int stateIndex;
+
+        // servoPosition[servoNum-1][stateIndex] = targetPosition;
+        servoPosition[servoNum-1][1] = targetPosition;
+        servoPosition[servoNum-1][2] = targetPosition;
+
+        diagnostics();
+        Serial.println("<<< END PROCESSING setServoPosition");
+    }
+
     if (root["command"] == "setTransitionType") {
         String tempType = root["value"];
         // Output parsed structure to serial, for debugging
@@ -377,7 +424,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 }
 
-// let's see if we can change to the map funciton instead
+// let's see if we can change to the map function instead
 // int interpolate(int start_value, int target_value, int start_time, int end_time, int current_time) {
 //     float v_start = (float) start_value;
 //     float v_target = (float) target_value;

@@ -1,2 +1,17 @@
-{ "sensors": [{ "name": "temperature", "value": 21.42667 }] }
-{ "sensors": [{ "name": "temperature", "value": 21.42667 }] }
+{
+  "sensors": [
+    "temperature": [
+         "value": 0.5}
+    ],
+    "humidity": [
+        {"value": 0.5}
+    ]
+
+    { "name": "temperature", "value": 24.23554 },
+    { "name": "proximity", "value": 0.5 }
+    { "name": "parrots", "value": 0.5 }
+    { "name": "dragons", "value": 0.5 }
+  ]
+}
+
+print(sensor["temperature"]["value"]
