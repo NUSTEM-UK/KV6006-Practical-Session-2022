@@ -25,8 +25,8 @@ If you've not used Python before it can be a bit of a jolt, but you'll pick it u
 
 ### Microcontrollers
 
-We'll be communicating with networked microcontroller devices. Some are ESP8266 or ESP32 devices, running the Arduino (C++) platform, while others are Raspberry Pi Pico boards running MicroPython.
+We'll be communicating with networked microcontroller devices. Some are ESP8266 devices, running the Arduino (C++) platform, while others are Raspberry Pi Pico W boards running MicroPython. They're limited in processing power and RAM, but are nevertheless surprisingly capable.
 
 Microcontrollers typically lack an operating system as such, and store their program in flash memory. Apply power, and they'll immediately start running whatever code they were last flashed with. Even cheap hobbyist devices are astonishingly robust: we've had boards which have sat on a shelf for years between uses, without issue, and others which have run continuously for several years.
 
-Networked microcontrollers can cost under $5. They're often limited in processing power and RAM, but less so than you might imagine.
+Both Pico W and ESP8266 microcontrollers cost about $6 each.
