@@ -44,7 +44,7 @@ That's a bit messy, so let's reformat it:
 }
 ```
 
-This is JSON-structured data, containing information about all the humans who are currently in space. Documentation for this API may be found at [http://open-notify.org/Open-Notify-API/People-In-Space/](http://open-notify.org/Open-Notify-API/People-In-Space/), where you'll notice that the data source is... a guy called Nathan who's really obsessed with space missions, who does this by hand every time there's a launch. Seriously.
+This is JSON-structured data, containing information about all the humans who are currently in space. Documentation for this API may be found at [http://open-notify.org/Open-Notify-API/People-In-Space/](http://open-notify.org/Open-Notify-API/People-In-Space/), where you'll notice that the data source is... a guy called Nathan who's really obsessed with space missions, who updates this by hand every time there's a launch. Seriously.
 
 Let's do something with this programatically.
 
@@ -59,12 +59,13 @@ data = r.json()
 print(data['number'])
 ```
 
-Run that code, and in the lower Shell window you should receive a number as output. What's happening?
+Run that code, and in the lower Shell window you should receive a number as output.
+
+What's happening?
 
 ### If it doesn't work
 
 If Thonny gives you a package error on `requests`, go to Tools -> Manage Packages. Search for `requests`, then install it. You may have to do this with other packages during the workshop.
-
 
 ### Prettier output via a basic GUI
 
@@ -110,8 +111,6 @@ message3 = Text(app, people_string, size=14, color='blue')
 ```
 
 You'll need to fix at least one bug: the window won't be tall enough to display all the names.
-
-If you like, try to display the spacecraft alongside the names.
 
 ## Energy generation, and drawing graphs
 
@@ -166,7 +165,7 @@ Run that, and after a few seconds (possibly _quite a few seconds_) you should ha
 
 ## Other APIs
 
-There are, of course, rather a lot of APIs out there. **Some** worth exploring are:
+There are, of course, rather a lot of APIs out there. Some worth exploring are:
 
 * OpenWeatherMap. [https://openweathermap.org/api](https://openweathermap.org/api). Terrific breadth and depth of data in a service that's free for the first 1000 API calls per day.
 * The 'people in space' guy also publishes data about the International Space Station: [http://open-notify.org/](http://open-notify.org).
