@@ -1,1 +1,12 @@
-{"sensors": [{"name": "temperature", "value": 28.44883}]}
+{
+    "sensors": [
+        { "name": "temperature", "value": 26.10811 },
+        { "name": "magnet", "value": 1 },
+        { "name": "dial", "value": 45931 },
+        { "name": "force", "value": 688 },
+        { "name": "blue", "value": 1 },
+        { "name": "yellow", "value": 1 },
+        { "name": "pink", "value": 1 },
+        { "name": "green", "value": 1 }
+    ]
+}
