@@ -40,16 +40,35 @@ except OSError as e:
 temp_sensor = machine.ADC(4)
 conversion_factor = 3.3/65535
 
+magnet_sensor = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)
+dial_sensor = machine.ADC(0)
+force_sensor = machine.ADC(1)
+
+button_blue = machine.Pin(10, machine.Pin.IN, machine.Pin.PULL_UP)
+button_yellow = machine.Pin(11, machine.Pin.IN, machine.Pin.PULL_UP)
+button_pink = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
+button_green = machine.Pin(13, machine.Pin.IN, machine.Pin.PULL_UP)
+
 while True:
     # Slightly dodgy conversion of reading to temperature in Celsius
     # TODO: look into whether this is even vaguely accurate.
     temp_reading = temp_sensor.read_u16() * conversion_factor
     temperature = 27 - (temp_reading - 0.706)/0.001721
 
+    magnet_reading = magnet_sensor.value()
+    dial_reading = dial_sensor.read_u16()
+    force_reading = force_sensor.read_u16()
+
     # Construct dictionary
     sensor_data = {"sensors": [
         {"name": "temperature", "value": temperature},
-        {"name": "parrots", "value": 0}
+        {"name": "magnet", "value": magnet_reading},
+        {"name": "dial", "value": dial_reading},
+        {"name": "force", "value": force_reading},
+        {"name": "blue", "value": button_blue.value()},
+        {"name": "yellow", "value": button_yellow.value()},
+        {"name": "pink", "value": button_pink.value()},
+        {"name": "green", "value": button_green.value()}
     ]}
     # print(sensor_data)
 
@@ -58,4 +77,4 @@ while True:
     print("Published: " + str(sensor_data))
     # print(json.dumps(sensor_data))
 
-    time.sleep(5)
+    time.sleep(1)
