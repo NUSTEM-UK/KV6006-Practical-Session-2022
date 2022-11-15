@@ -30,7 +30,7 @@ void reconnect() {
     // Attempt to connect
     digitalWrite(02, LOW);
     // FIXME: MQTT password
-    if (client.connect(skutterNameArray, "connect", "")) {
+    if (client.connect(skutterNameArray, "KV6006", "3YoQvn9w*PB4")) {
       Serial.println("connected");
       client.publish("/KV6006/output/announce", subsTargetArray);
       client.subscribe(subsTargetArray); // Subscribe to the specific channel

@@ -32,11 +32,11 @@ String subsTargetString;
 char subsTargetArray[60];
 
 // Servo and LED strip setup
-#define PIN_SERVO1 D2
+#define PIN_SERVO1 D1
 #define PIN_SERVO2 D6
 #define PIN_LED_BLUE D4
 #define PIN_LED_RED D3
-#define PIN_PIXEL D1
+#define PIN_PIXEL D2
 
 #define PIXEL_COUNT 1
 #define SERVO_COUNT 2
@@ -75,11 +75,14 @@ void setup() {
     // Get this Huzzah's MAC address and use it to register with the MQTT server
     //  huzzahMACAddress = WiFi.macAddress();
     //  skutterNameString = "skutter_" + huzzahMACAddress;
-    skutterNameString = WiFi.macAddress();
+    // skutterNameString = WiFi.macAddress();
+    // FIXME: Device name
+    skutterNameString = "skutter-D53";
     Serial.println(skutterNameString);
     skutterNameString.toCharArray(skutterNameArray, 60);
     // subsTargetString = "KV6006/" + skutterNameString;
-    subsTargetString = "/KV6006/output/D31";
+    // FIXME: Device name
+    subsTargetString = "/KV6006/output/D53";
     subsTargetString.toCharArray(subsTargetArray, 60);
     for (int i = 0; i < 60; i++) {
         Serial.print(subsTargetArray[i]);
@@ -318,14 +321,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
         // THere's only one pixel in these skutters
         int pixel_number = 0;
 
-        // Are we writing to state A or B?
-        int stateIndex;
-        if (state == "A") {
-            stateIndex = 1;
-        } else {
-            stateIndex = 2;
-        }
-
         // Update all the everything
         ledsHSV[pixel_number][1].hue = targetHue;
         ledsHSV[pixel_number][2].hue = targetHue;
@@ -385,19 +380,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
     // Hack of setServoPosition for KV6006 purposes
     if (root["command"] == "servoAngle") {
-        int servoNum = root["servoNum"];
-        float targetPosition = root["angle"];
+        // int servoNum = root["servoNum"];
+        float targetPosition = root["value"];
         // Output parsed structure to serial, for debugging
         Serial.print("Set Servo: ");
-        Serial.print(servoNum);
+        // Serial.print(servoNum);
         Serial.print(" to position: ");
         Serial.println(targetPosition);
         // Now act on it.
         int stateIndex;
 
         // servoPosition[servoNum-1][stateIndex] = targetPosition;
-        servoPosition[servoNum-1][1] = targetPosition;
-        servoPosition[servoNum-1][2] = targetPosition;
+        // servoPosition[servoNum-1][1] = targetPosition;
+        // servoPosition[servoNum-1][2] = targetPosition;
+        servoPosition[0][1] = targetPosition;
+        servoPosition[0][2] = targetPosition;
 
         diagnostics();
         Serial.println("<<< END PROCESSING setServoPosition");

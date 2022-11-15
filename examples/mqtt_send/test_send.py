@@ -1,9 +1,11 @@
 import paho.mqtt.client as mqtt
 import config
 import json
+from time import sleep
 
 def on_publish(client, userdata, result):
-    print("Data published")
+    print("Data published: ")
+
     pass
 
 client = mqtt.Client("control")
@@ -17,25 +19,43 @@ except:
     print("MQTT connection failed")
     exit(1)
 
-target = "/KV6006/output/D31"
-message = {"command": "setLEDhue",
-            "position": "",
-            "state": "B",
-            "value": 120}
+# FIXME: Change the target device here!
+target = "/KV6006/output/D32"
+
+# message = {"command": "setLEDhue",
+#             "position": "",
+#             "state": "B",
+#             "value": 120}
+# message_json = json.dumps(message)
+# client.publish(target, message_json)
+
+message = {"command": "LEDhue",
+            "value": 128}
 message_json = json.dumps(message)
 client.publish(target, message_json)
 
-message = {"command": "setServoPosition",
-            "servoNum": 1,
-            "state": "A",
-            "angle": 0}
+message = {"command": "servoAngle",
+            "value": 0}
 message_json = json.dumps(message)
 client.publish(target, message_json)
 
-message = {"command": "setServoPosition",
-            "servoNum": 1,
-            "state": "B",
-            "angle": 180}
+sleep(1)
+
+message = {"command": "servoAngle",
+            "value": 180}
 message_json = json.dumps(message)
 client.publish(target, message_json)
 
+# message = {"command": "setServoPosition",
+#             "servoNum": 1,
+#             "state": "B",
+#             "angle": 180}
+# message_json = json.dumps(message)
+# client.publish(target, message_json)
+
+sleep(1)
+
+message = {"command": "LEDhue",
+            "value": 42}
+message_json = json.dumps(message)
+client.publish(target, message_json)
