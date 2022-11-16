@@ -19,7 +19,6 @@ data = r.json()
 # Write some text to the GUI window
 message0 = Text(app, " ", height=2) # spacer to push other text down the window a little
 message1 = Text(app, "Number of people in space: ", size=24)
-# Need to cast data['number'] to string to display it
 message2 = Text(app, data['number'], size=48, color='red')
 
 # Now show the window, containing the messages

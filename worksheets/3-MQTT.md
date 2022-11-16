@@ -12,7 +12,7 @@ The topic doesn't need to already exist before a client publishes or subscribes 
 
 > `/Northumbria/City_Campus/+/E_Block/+`
 
-The `+` is a single-level wildcard, so this would match any building on City Campus that has an 'E_Block', then any room in that building.
+The `+` is a single-level wildcard, so this would receive messages about any building on City Campus that has an 'E_Block', and for any room in that building.
 
 > `/Northumbria/City_Campus/#`
 
@@ -23,6 +23,7 @@ The `+` is a single-level wildcard, so this would match any building on City Cam
 We're going to use the Paho MQTT client library in Python, and we've a little bit of setup to do. In a fresh Thonny document:
 
 ```python
+# examples/mqtt_subscribe/mqtt_subscribe.py
 import paho.mqtt.client as mqtt
 import config
 import json
@@ -60,15 +61,19 @@ except:
     exit(1)
 ```
 
+You'll notice the import from `config.py`: this file should already be in your `student_work` directory. It contains the username and password for the MQTT broker we're using.
+
 If all goes well, the `client.loop_forever()` line will keep the program running. When a message is received, `on_message()` is called to handle it - you should see messages being output.
 
 If the connection drops the program will likely crash; in a real-world situation you'd want to be a bit more robust in your error handling. That said, I've had very similar code to the above running on a server for almost a year without issue.
 
 ## Parsing data received over MQTT
 
-You'll notice a steady stream of data on the `/KV6006/Sensors` topic. This is coming from a device at the front of the room: a Raspberry Pi Pico W microcontroller connected to a bunch of different sensors. A MicroPython script on the Pico polls data from the sensors, packages it as JSON, and broadcasts it over MQTT. It's connected to a WiFi network from a 4G mobile router. The MQTT broker is physically in London, by the way.
+You'll notice a steady stream of data on the `/KV6006/Sensors` topic. This is coming from a device at the front of the room: a Raspberry Pi Pico W microcontroller connected to a bunch of different sensors. A MicroPython script on the Pico polls data from the sensors, packages it as JSON, and broadcasts it over MQTT every second.
 
-The sensors data feed is formatted as JSON. So you can expand your `on_message()` function to do something like:
+The Pico is connected to a WiFi network from a 4G mobile router. The MQTT broker is physically in London.
+
+Since the sensors data feed is formatted as JSON, you can expand your `on_message()` function to do something like:
 
 ```python
 # [...]
@@ -82,14 +87,13 @@ for sensor in data['sensors']:
     print("Value: " + str(sensor['value']))
 ```
 
-The sensor `value` is of type `float`, and we have to explicitly convert it to a string with `str()`.
+The sensor `value` is of type `float` or `int`: in some case you may need to explicitly convert it to a string with `str()`.
 
-> NOTE: the Paho MQTT package we're using suppresses error messages in the `on_message()` callback. Which makes debugging infuriatingly difficult. You can work around this by adding `client.on_log = on_long` to the configuration after the `client.on_connect` and `client.on_message` lines. However, you'll see a *lot* of diagnostics.
+> NOTE: the Paho MQTT package we're using suppresses error messages in the `on_message()` callback. Which makes debugging infuriatingly difficult. You can work around this by adding `client.on_log = on_log` to the configuration after the `client.on_connect` and `client.on_message` lines. However, you'll see a *lot* of diagnostics.
 
 ### Getting just some of the data
 
 Suppose you wanted just the temperature sensor data. Unfortunately, there isn't a useful key you can access: something like `data['sensors']['temperature']` won't work. It's possible my Python-fu just isn't strong enough, but I think you'd have to do something like:
-
 
 ```python
 for sensor in data ['sensors']:
@@ -97,15 +101,16 @@ for sensor in data ['sensors']:
         print("Temperature is: " + str(sensor['value']))
 ```
 
-This probably illustrates that I should have thought more carefully about the JSON structure of the sensor data, or broken the individual sensors out into different MQTT topics.
+> See `examples/mqtt_subscribe/mqtt_subscribe-parse.py` if you can't get this working.
 
-Think about (and discuss) how the sensor data could be better structured.
+Having to scan the entire JSON tree to extract a single piece of data probably illustrates that I should have thought more carefully about the data structure. Think about (and discuss) how the sensor data could be better structured. Perhaps I should have broken the individual sensors out into different MQTT topics? How might you allow selectors like `data['sensors']['temperature']`?
 
 ## Sending MQTT messages
 
 This is even simpler:
 
 ```python
+# examples/mqtt_send/basic_send.py
 import json
 import paho.mqtt.client as mqtt
 import config
@@ -117,25 +122,26 @@ payload = {"name:" "Bob",
            "data_value": 328}
 
 mqtt.connect(config.mqtt_server, config.mqtt_port, 60)
-mqtt.publish("KV6006/test", json.dumps(payload))
+mqtt.publish("/KV6006/test", json.dumps(payload))
 ```
 
-You could wrap the last two lines in a `try / except` structure, but for our purposes today it's not terribly important. The `json.dump()` method handles converting the Python dictionary `payload` into JSON format for us.
+You could wrap the last two lines in a `try/except` structure, but for our purposes today it's not terribly important. The `json.dump()` method handles converting the Python dictionary `payload` into JSON format for us.
+
+You won't see output from this unless someting is running that's subscribed to `/KV6006/test`. Get somebody to run `mqtt_subscribe/mqtt_subscribe_all.py` and watch the output there?
 
 ## Controlling a device over MQTT
 
-Finally, we get to the odd little device which has been sitting next to your Raspberry Pi all along. This is an even simpler microcontroller than the Pico - the little blue thing is an ESP8266, which is about as cheap as WiFi-enabled boards get. It's sitting on a chunk of breadboard (the white slab with holes in it), wired up to two output devices:
+Finally, we get to the odd little device which has been sitting next to your Raspberry Pi all along. This is an even simpler microcontroller than the Pico – an ESP8266, which is about as cheap as WiFi-enabled boards get. It's sitting on a chunk of breadboard (the white slab with holes in it), wired up to two output devices:
 
 - An RGB LED, which can display a range of colours at variable brightness.
-- A servo motor, which can turn its 'horn' through about 180 degrees.
+- A servo motor, which can turn its white plastic 'horn' through about 180 degrees.
 
-The code these boards are running was originally written five or so years ago, for an installation art project. The code is... mmm, *not good*. However, it still works. Mostly.
+Each device listens for commands via its own MQTT topic, `/KV6006/output/[device_code]`. The device code is printed on a sticker on the device.
 
-Each device listens for commands via its own MQTT topic, `/KV6006/output/[device_code]`. The device code is printed on a sticker on the ESP8266.
-
-You can command the device using something like:
+You can command the device using something like this. **A couple of lines need changing to reflect the label on your device**:
 
 ```python
+# examples/mqtt_send/control_device.py
 import paho.mqtt.client as mqtt
 import config
 import json
@@ -177,34 +183,19 @@ message = {"command": "servoAngle",
 client.publish(target, json.dumps(message))
 ```
 
-You can probably work out what this is intended to do.
+Work through what this is doing, and discuss what's happening at each stage. It'd probably be good if you called one of us over and talked us through your understanding of it.
 
 ### A note about colour
 
-Colour representation is one of *those* subjects. You'd think it would be easy, but... no. Not as such.
+Colour representation is one of *those* subjects. You'd think it would be easy, but... no. I've just deleted 300 words from the worksheet here. A lucky escape. The important bits:
 
-Most computer systems *display* full colour by mixing red, green and blue (RGB) light emitters (LEDs, or phosphor dots on an old-fashioned tube monitor and wow do I feel old typing that). These three colours correspond fairly well to the receptors in our eyes, and you can cover a pretty decent range of colours by mixing them together.
+The ESP8266 devices use an [HSV colour model](https://en.wikipedia.org/wiki/HSL_and_HSV). You pass them a 'hue angle' to describe a colour, rather than trying to mix the colour you want by varying red, green and blue componets. That conversion is handled by the device. Only, 'hue angle' in this case is an 8-bit value, so we're mapping `0..360` degrees into a `0..255` numeric range.
 
-Typically, each colour scales in brightness from `0` (off) to `255` (full brightness). 255 is chosen because it's the largest integer you can represent in 8 bits, which means each pixel takes 24 bits of data. In theory the human eye can't distinguish that many brightness steps, though in practice it turns out 24-bit colour isn't *quite* good enough in all circumstances.
-
-Whatever, the output device has precisely one pixel. It has separate red, green and blue emitters, and the internal data model is 8 brightness bits per emitter.
-
-BUT: it's really hard to work out what colour you're going to get when you start mixing red, green and blue. In many circumstances, it's more convenient to just pick a colour and ask for that. Welcome to HSV colour space.
-
-Rather than RGB – which feels like it *ought* to make sense, but doesn't - HSV seems horrendous, but is somehow easier. It's still 3x8-bits, with the channels being:
-
-* **Hue**. An arbitrary figure, typically representing an angle around a wheel of colours.
-* **Saturation**. How intense is the hue, within the brightness range?
-* **Value**. Which is more-or-less overall brightness, sometimes described as Lightness ('HSL space') or brightness ('HSB space').
-
-You may have spotted a problem here: circles traditionally cover 360 degrees, which is a bigger number than 255. So, yes, we represent Hue *angle* on a scale from 0..255. Just roll with it. The scale looks like this:
+Upshot: pick a colour from the scale below, take a broad guess at the number associated with it, and try that.
 
 ![Hue angle image](images/HueScale.png)
-
-TL;DR: guess a Hue value from the chart above, pass that to the output device, and it'll show... mmm, something vaguely related. Colour *matching* is a whole other problem.
-
-## Things to do at this point
+## Things to discuss at this point
 
 - `LEDhue` and `servoAngle` aren't great names for commands. More common would be `setLEDhue` and `setServoAngle`. Why?
-- If you're _really_ keen, the code the ESP8266s are running is in this repository, in the `output_devices` directory. For obscure reasons these things got called 'Skutters'. By all means take a look at the code, and see if you can work out some of the API calls I've not mentioned. Hint: The original devices stored two states, 'A' and 'B', and animated changes between them.
+- The code the ESP8266s are running was written years ago, for an installation art project. For obscure reasons they got called 'Skutters,' and the code is... mmm, *not good*. If you need a laugh (or to recoil in horror), take a look in `output_devices/skutter`. However, the code still works after all these years, so I don't feel too terrible about it. Skutters have a much more extensive API than covered above, and can in theory handle looping animation between two different states.
 - If you find the command to change the LED brightness, be warned that full brightness is eye-searingly horrid. Don't say I didn't warn you.

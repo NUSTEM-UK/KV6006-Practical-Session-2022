@@ -1,4 +1,9 @@
 """DataBot - display atmospheric pressure on a Pimoroni ScrollBot.
+
+This is a Pi Zero-hosted data display which sits in my lounge,
+showing some basic weather data on rotation. There are some nice
+little techniques in here, though I really should rewrite it in a more
+object-oriented way. But hey, it's never crashed.
 """
 
 import pyowm
@@ -71,7 +76,7 @@ class RepeatedTimer(object):
 
 def updatePressure():
     """Fetch pressure data from OpenWeatherMap.
-    
+
     Triggered on a timer to avoid overloading API.
     - 2019-07-28 Also update daily max. temperature
     """
@@ -92,7 +97,7 @@ def updatePressure():
         # Something went wrong, reinstate the old value
         pressureReport = oldReport
         tempReport = oldTempReport
-    
+
     return pressureReport
 
 
@@ -103,13 +108,13 @@ def updatePollen():
     Now scraping web data instead of using pypollen, since that was
     unreliable. Hard-coded to North-East region ('ne').
     """
-    
+
     global pollenReport
 
     # Save the old report
     # Disabled for visible error reporting
     # oldReport = pollenReport
-    
+
     # re-initialise the string with a leading space, to avoid it
     # scrolling off the display immediately.
     pollenReport = " "
@@ -147,7 +152,7 @@ def updatePollen():
 
 def displayClock():
     """Render current time to the ScrollpHAT."""
-    
+
     global showTime
     # Get the current time
     timeString = time.strftime("%H:%M")
@@ -160,15 +165,15 @@ def displayClock():
 
 def displayPressure(startTime):
     """Render pressure data to the ScrollpHAT."""
-    
+
     global showTime
     global pressureReport
     targetTime = startTime + showTime
     scrollphathd.clear()
     scrollphathd.write_string(str(pressureReport), font=font5x5, brightness=BRIGHTNESS)
-    scrollphathd.show()    
-    # print(pressureReport)    
-        
+    scrollphathd.show()
+    # print(pressureReport)
+
     while (time.time() < targetTime):
         time.sleep(0.05)
 
@@ -180,11 +185,11 @@ def displayPressure(startTime):
 
     while (time.time() < targetTime):
         time.sleep(0.05)
-    
+
 
 def displayPollen(startTime):
     """Render pollen data to the ScrrollpHAT."""
-    
+
     global showTime
     global pollenReport
     targetTime = startTime + showTime
@@ -200,7 +205,7 @@ def displayPollen(startTime):
 
 
 if __name__ == "__main__":
-    
+
     # Get data on initial start
     pressureReport = updatePressure()
     pollenReport = updatePollen()

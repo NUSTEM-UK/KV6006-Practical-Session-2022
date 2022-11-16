@@ -9,6 +9,8 @@ On a Pi, may need:
     sudo apt install libxslt-dev
 
 (packaging error for pyquery on some Debian releases)
+
+(note that there's no pollen data for half of the year)
 """
 
 from pyquery import PyQuery as pq

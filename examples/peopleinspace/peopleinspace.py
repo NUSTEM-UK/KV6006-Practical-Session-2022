@@ -20,8 +20,3 @@ for person in data['people']:
 
 print("-----")
 print("Total people in space: ", data['number'])
-
-# Maybe use something physical to represent the number of people? 
-# Like a set of LEDs as a bar graph LEDBarGraph from GPIOzero:
-# https://gpiozero.readthedocs.io/en/stable/api_boards.html#ledbargraph
-# ...or a multi-segment display in HAT.

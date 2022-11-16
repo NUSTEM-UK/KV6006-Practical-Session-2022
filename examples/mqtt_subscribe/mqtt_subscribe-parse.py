@@ -2,11 +2,13 @@ import paho.mqtt.client as mqtt
 import config
 import json
 
+
 def on_connect(client, userdata, flags, rc):
     """Callback for when mqtt client connects."""
     print("Connected with result code: " + str(rc))
-    # For now, subscribe to the firehose
+    # Retrieve sensor data
     client.subscribe("/KV6006/Sensors/#")
+
 
 def on_message(client, userdata, msg):
     """Callback for when mqtt client receives a message."""
@@ -27,18 +29,21 @@ def on_message(client, userdata, msg):
         # If the sensor is a temperature sensor, print the temperature
         # in Fahrenheit as well.
         if sensor['name'] == 'temperature':
-            print("Temperature in Fahrenheit: " + str(sensor['value'] * 9 / 5 + 32))
-
+            print("Temperature in Fahrenheit: " +
+                  str(sensor['value'] * 9 / 5 + 32))
 
 
 def on_log(mqttc, obj, level, string):
+    """Callback for when mqtt client logs something."""
     print(string)
+
 
 # Now we have our callback functions for connection and message receipt,
 # we can go ahead and make a connection.
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
+# Uncomment to enable debug messages
 # client.on_log = on_log
 client.username_pw_set(config.mqtt_username, config.mqtt_password)
 

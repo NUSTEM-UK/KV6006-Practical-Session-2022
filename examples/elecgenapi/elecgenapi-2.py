@@ -5,7 +5,7 @@ Simple example of parsing a JSON API source. See
 
 Uses the requests library, which automatically parses JSON data.
 
-Based on example code from NationalGrid: 
+Based on example code from NationalGrid:
 https://carbon-intensity.github.io/api-definitions/?python#generation
 
 Pie chart code from matplotlib docs:
@@ -22,6 +22,8 @@ headers = {
     'Accept': 'application/json'
 }
 
+print("This may take a short while!")
+
 r = requests.get('https://api.carbonintensity.org.uk/generation', params={}, headers=headers)
 
 mix = r.json()
@@ -30,10 +32,10 @@ mix = r.json()
 fueltype = []
 percentage = []
 
-for fuel in mix['data']['generationmix']:
+for line in mix['data']['generationmix']:
     # Add the fuel type and percentage to the respective lists
-    fueltype.append(fuel['fuel'])
-    percentage.append(fuel['perc'])
+    fueltype.append(line['fuel'])
+    percentage.append(line['perc'])
 
 # Set up a chart
 fig1, ax1 = plt.subplots()
@@ -42,6 +44,5 @@ ax1.pie(percentage, labels=fueltype, autopct='%1.1f%%', shadow=False, startangle
 ax1.axis('equal') # Equal aspect ratio ensures that pie is drawn as a circle
 
 # Present the pie chart. Close the window to exit the program
-print("This may take a short while!")
 print("Note: program will not exit until you close the resulting chart window.")
 plt.show()

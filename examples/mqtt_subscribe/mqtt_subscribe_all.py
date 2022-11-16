@@ -13,8 +13,7 @@ def on_message(client, userdata, msg):
     payload = str(msg.payload.decode("utf-8"))
     # For now, output the message
     print(topic + " " + payload)
-    # ...but we'll show how to match a specific topic.
-    # It would usually be better to subscribe to only the desired topic
+    # Sometimes it's useful to select messages based on the topic.
     if (topic.startswith("/KV6006/Sensors/ding")):
         print("DING!")
 

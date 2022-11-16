@@ -1,6 +1,6 @@
 # KV6006 practical session - 2 - Data Source - APIs
 
-These exercises pull data from web sources, then... do something with it.
+These exercises pull data from web sources, then parse it a bit. The main purpose here is to explore handling JSON data in Python, though using a basic GUI library and drawing graphs might also come in handy.
 
 ## People in Spaaaace!
 
@@ -48,7 +48,7 @@ This is JSON-structured data, containing information about all the humans who ar
 
 Let's do something with this programatically.
 
-Open the Thonny editor, and in the upper pane enter the following Python:
+Open the Thonny editor – there's a terrible `Th` icon in the top menu bar – and make yourself a new file in the `student_work` directory. In the upper pane enter the following Python:
 
 ```python
 import requests
@@ -59,11 +59,15 @@ data = r.json()
 print(data['number'])
 ```
 
-Run that code, and in the lower Shell window you should receive a number as output.
+Try running the code (click the green run button, choose 'Run current script' from the Run menu, or hit `F5`), and you should receive a number in the lower `Shell` pane.
 
-What's happening?
+Congratulations, you just retrieved and parsed some JSON data.
+
+What does the number represent?
 
 ### If it doesn't work
+
+If you can't run the code, click the text in the lower-right corner of the window and check it says something like `Local Python 3 – Thonny's Python`.
 
 If Thonny gives you a package error on `requests`, go to Tools -> Manage Packages. Search for `requests`, then install it. You may have to do this with other packages during the workshop.
 
@@ -99,7 +103,7 @@ Run that, and you should see a nice neat GUI window. Excellent.
 
 Those are real people up there. They have names, families, hopes and dreams. One would hope their dreams included 'going to space,' in which case: good job. And we know nothing about their families. But we can at least display their names.
 
-We can use a python iterator to step through the people (`data['people']`), and extract just their names.
+We can use a python iterator to step through (`data['people']`), and extract their names.
 
 ```python
 # [...] after message2:
@@ -111,6 +115,8 @@ message3 = Text(app, people_string, size=14, color='blue')
 ```
 
 You'll need to fix at least one bug: the window won't be tall enough to display all the names.
+
+If you get stuck, you'll find code in `examples/peopleinspace`. That goes for this whole worksheet: try to write the code yourself, but draw on the `examples` directory when you need to. You'll also find examples of the JSON data structures for each exercise, to explore.
 
 ## Energy generation, and drawing graphs
 
@@ -133,8 +139,6 @@ for fuel in mix['data']['generationmix']:
     # Need to cast percentage to string to concatenate it for printing:
     print(fueltype + ": " + str(percentage))
 ```
-
-You'll find these bits of code in the `examples` directory, by the way, along with example JSON data you can explore.
 
 OK, a badly-formatted table is fine, but... let's draw a graph! Modify the code above to include the following (or open `elecgenapi-2.py` from the examples folder).
 
@@ -165,7 +169,7 @@ Run that, and after a few seconds (possibly _quite a few seconds_) you should ha
 
 ## Other APIs
 
-There are, of course, rather a lot of APIs out there. Some worth exploring are:
+There are, of course, rather a lot of these sorts of API out there. Some you may wish to explore  at a later date:
 
 * OpenWeatherMap. [https://openweathermap.org/api](https://openweathermap.org/api). Terrific breadth and depth of data in a service that's free for the first 1000 API calls per day.
 * The 'people in space' guy also publishes data about the International Space Station: [http://open-notify.org/](http://open-notify.org).

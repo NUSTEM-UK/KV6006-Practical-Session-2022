@@ -1,17 +1,12 @@
 {
   "sensors": [
-    "temperature": [
-         "value": 0.5}
-    ],
-    "humidity": [
-        {"value": 0.5}
-    ]
-
-    { "name": "temperature", "value": 24.23554 },
-    { "name": "proximity", "value": 0.5 }
-    { "name": "parrots", "value": 0.5 }
-    { "name": "dragons", "value": 0.5 }
+      { "name": "temperature", "value": 26.10811 },
+      { "name": "magnet", "value": 1 },
+      { "name": "dial", "value": 45931 },
+      { "name": "force", "value": 688 },
+      { "name": "blue", "value": 1 },
+      { "name": "yellow", "value": 1 },
+      { "name": "pink", "value": 1 },
+      { "name": "green", "value": 1 }
   ]
 }
-
-print(sensor["temperature"]["value"]

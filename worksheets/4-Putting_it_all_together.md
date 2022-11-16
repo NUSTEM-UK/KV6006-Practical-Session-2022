@@ -1,21 +1,50 @@
-# KV6006 Practical Session - 4. Putting it all together
+# KV6006 Practical Session - 4 - Putting it all together
 
 At this point you have:
 
-- Retrieving data from API endpoints, structured as JSON
-- Subscribing to sensor data feeds over MQTT, and setting up a callback function to parse and handle new data when it arrives.
-- Sending commands (formatted as JSON) over MQTT, to control a physical output device.
-- Also: drawing graphs and building a simple GUI.
+- Retrieved data from API endpoints, structured as JSON.
+- Subscribed to sensor data feeds over MQTT, setting up a callback function to parse and handle new data when it arrives.
+- Sent commands (formatted as JSON) over MQTT, to control a physical output device.
+- You've also drawn graphs and built a simple GUI.
 
-Broadly, you have inputs and outputs, and several fragments of Python which might help you glue those together. So... let's do that.
+Broadly, you have inputs and outputs, and several fragments of Python which might help you glue those together.
 
-> Pick an input, and hook it up to an output.
+## Your challenge
+
+The sensor device is happily spewing data into the aether. It seems a shame not to do something with it. So:
+
+> **Pick some inputs, and hook them up to some outputs.**
 
 You might turn your servo into a pointer on a scale, indicating some received value. Or use the colour of your LED to indicate the state of something.
 
-Cardboard, scissors, tape and pens are available.
+### Sensors
 
-## Things that might be useful
+For reference, here's a diagram of the Pico sensor device with all the wires in the right places:
+
+![Alt text](images/Pico_sensors_wiring.png)
+
+The JSON output looks something like:
+
+```json
+{
+  "sensors": [
+      { "name": "temperature", "value": 26.10811 },
+      { "name": "magnet", "value": 1 },
+      { "name": "dial", "value": 45931 },
+      { "name": "force", "value": 688 },
+      { "name": "blue", "value": 1 },
+      { "name": "yellow", "value": 1 },
+      { "name": "pink", "value": 1 },
+      { "name": "green", "value": 1 }
+  ]
+}
+```
+
+As with the Mbed boards, `temperature` is taken from an on-chip sensor, so it's pretty hopeless as a room thermometer.
+
+### Things that might be useful
+
+Cardboard, scissors, tape and pens are available.
 
 **Range**. You may need to investigate the min/max range the sensors might output. How could you do that?
 
@@ -39,3 +68,9 @@ Make sure both ranges are positive, and non-zero.
 
 * [guiZero docs](https://lawsie.github.io/guizero/). (note the menu along the top.)
 * [A more extensive app example](https://github.com/NUSTEM-UK/vet/blob/main/vet.py), with some work-arounds for nasty timing collisions between MQTT stuff and GUI toolkit stuff. See lines 350 onwards, mostly.
+
+### Things to discuss
+
+- How does your program store state? Does it need to?
+- You're working on a Raspberry Pi, which is orders of magnitude more powerful than the Pico W and ESP8266 devices. Do you need all that power to achieve what you're doing?
+- The sensor device is a spiky mess of wires, but where might you encounter similar sorts of sensors 'in the real world'?
