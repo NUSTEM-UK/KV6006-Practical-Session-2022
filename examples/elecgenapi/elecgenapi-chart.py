@@ -15,6 +15,9 @@ https://matplotlib.org/3.1.1/gallery/pie_and_polar_charts/pie_features.html
 import requests
 import matplotlib.pyplot as plt
 
+# Disable warnings for ignoring https certificate verification (working around a university firewall issue)
+requests.packages.urllib3.disable_warnings()
+
 # I removed the 'headers' dictionary in the previous example because it turns out
 # it's not strictly necessary. However, it *is* in the National Grid example code,
 # so I thought I should leave it in, really.
@@ -24,7 +27,8 @@ headers = {
 
 print("This may take a short while!")
 
-r = requests.get('https://api.carbonintensity.org.uk/generation', params={}, headers=headers)
+# Get some data, ignoring https certificate validation checks.
+r = requests.get('https://api.carbonintensity.org.uk/generation', params={}, headers=headers, verify=False)
 
 mix = r.json()
 

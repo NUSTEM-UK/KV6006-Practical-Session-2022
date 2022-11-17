@@ -3,11 +3,16 @@ import json
 import paho.mqtt.client as mqtt
 import config
 
-client = mqtt.Client()
+# TODO: Change the client name here, it has to be unique.
+client = mqtt.Client("Control_D55")
+client.username_pw_set(config.mqtt_username, config.mqtt_password)
+client.connect(config.mqtt_server, config.mqtt_port, 60)
 
-payload = {"name:" "Bob",
-           "favourite_colour": "blue",
-           "data_value": 328}
+# TODO: Change the target device here. It's written on a label stuck to the control board
+topic = "/KV6006/output/D55"
 
-mqtt.connect(config.mqtt_server, config.mqtt_port, 60)
-mqtt.publish("/KV6006/test", json.dumps(payload))
+payload = {"command": "LEDhue", "value": 120}
+client.publish(topic, json.dumps(payload))
+
+payload = {"command": "servoAngle", "value": 30}
+client.publish(topic, json.dumps(payload))

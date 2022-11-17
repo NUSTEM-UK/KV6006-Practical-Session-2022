@@ -1,3 +1,4 @@
+# examples/mqtt_subscribe/mqtt_subscribe.py
 import paho.mqtt.client as mqtt
 import config
 import json

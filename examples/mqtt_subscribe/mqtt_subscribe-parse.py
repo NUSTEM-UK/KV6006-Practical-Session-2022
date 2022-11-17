@@ -14,23 +14,22 @@ def on_message(client, userdata, msg):
     """Callback for when mqtt client receives a message."""
     topic = msg.topic
     # Decode the payload: convert it from bytes to a string...
-    payload = msg.payload.decode("utf-8")
+    payload = str(msg.payload.decode("utf-8"))
     # ...and then parse the string as JSON.
     data = json.loads(payload)
     # print(data)
 
     for sensor in data['sensors']:
-        print("Sensor Name: " + sensor['name'])
+        # This block commented out to simplify output
+        # print("Sensor Name: " + sensor['name'])
         # sensor value is a float, so we need to convert it to a string
         # Note that error messages are suppressed inside MQTT callbacks,
         # so it's very easy to mess this up!
-        print("Value: " + str(sensor['value']))
+        # print("Value: " + str(sensor['value']))
 
-        # If the sensor is a temperature sensor, print the temperature
-        # in Fahrenheit as well.
-        if sensor['name'] == 'temperature':
-            print("Temperature in Fahrenheit: " +
-                  str(sensor['value'] * 9 / 5 + 32))
+        # Select just the dial sensor
+        if sensor['name'] == 'dial':
+            print("Dial value is: " + str(sensor['value']))
 
 
 def on_log(mqttc, obj, level, string):
@@ -48,7 +47,7 @@ client.on_message = on_message
 client.username_pw_set(config.mqtt_username, config.mqtt_password)
 
 try:
-    client.connect("connect.nustem.uk", 1883, 60)
+    client.connect("connect.nustem.uk", config.mqtt_port, 60)
     print("MQTT connection successful.")
     client.loop_forever()
 except:
