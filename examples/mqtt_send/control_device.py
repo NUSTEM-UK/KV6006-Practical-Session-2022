@@ -71,7 +71,7 @@ client.username_pw_set(config.mqtt_username, config.mqtt_password)
 # client.on_log = on_log
 
 try:
-    client.connect("connect.nustem.uk", 1883, 60)
+    client.connect("connect.nustem.uk", config.mqtt_port, 60)
     print("MQTT connection successful.")
     client.loop_forever()
 except:

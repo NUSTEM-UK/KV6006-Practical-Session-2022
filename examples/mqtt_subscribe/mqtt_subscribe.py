@@ -35,7 +35,7 @@ client.on_message = on_message
 client.username_pw_set(config.mqtt_username, config.mqtt_password)
 
 try:
-    client.connect("connect.nustem.uk", 1883, 60)
+    client.connect("connect.nustem.uk", config.mqtt_port, 60)
     print("MQTT connection successful.")
     client.loop_forever()
 except:
