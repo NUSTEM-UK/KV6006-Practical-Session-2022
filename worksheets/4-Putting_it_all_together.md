@@ -20,7 +20,7 @@ You might turn your servo into a pointer on a scale, indicating some received va
 
 For reference, here's a diagram of the Pico sensor device with all the wires in the right places (which helps me if and when some of them fall out):
 
-![Alt text](images/Pico_sensors_wiring.png)
+![Pico W wiring diagram](images/Pico_sensors_wiring.png)
 
 The JSON output looks something like:
 
@@ -42,14 +42,21 @@ The JSON output looks something like:
 As with the Mbed boards, `temperature` is taken from an on-chip sensor, so it's pretty hopeless as a room thermometer.
 
 ### Things that might be useful
+#### Code
 
-**Code**: Most likely, you'll want to graft the configuration parts of `basic_send.py` into `mqtt_subscribe-parse.py`. That's because you probably want to publish commands to your output device from within the `on_message` callback function. Gluing everything together in Thonny on the Pis is a bit painful, so there's a starting point file in `examples/mqtt_send/control_device.py`. Copy this into your `student_work` directory and hack away on it.
+Most likely, you'll want to graft the configuration parts of `basic_send.py` into `mqtt_subscribe-parse.py`. That's because you probably want to publish commands to your output device from within the `on_message` callback function. Gluing everything together in Thonny on the Pis is a bit painful, so there's a starting point file in `examples/mqtt_send/control_device.py`. Copy this into your `student_work` directory and hack away on it.
 
-**Materials**: Cardboard, scissors, tape and pens are available, if you'd like to get crafty.
+#### Materials
 
-**Range**. You may need to investigate the min/max range the sensors might output. How could you do that?
+Cardboard, scissors, tape and pens are available, if you'd like to get crafty.
 
-**Converting scales**. You'll very likely need to convert a number that lies between two limits into the corresponding number that lies between two different limits. For example, scaling hue angle from 0..360 to 0..255. This Python function might help:
+#### Range
+
+You may need to investigate the min/max range the sensors might output. How could you do that?
+
+#### Converting scales
+
+You'll very likely need to convert a number that lies between two limits into the corresponding number that lies between two different limits. For example, scaling hue angle from 0..360 to 0..255. This Python function might help:
 
 ```python
 def rescale(x, in_min, in_max, out_min, out_max):
@@ -66,13 +73,7 @@ output = rescale(input, 0, 360, 0, 255)
 Make sure both ranges are positive, and non-zero.
 
 I've included this function in the `control_device.py` example script.
-
-**guiZero**. GUI toolkits can be fiddly, and to be honest I'd recommend sticking with physical device output over MQTT. But if you really want to explore:
-
-* [guiZero docs](https://lawsie.github.io/guizero/). (note the menu along the top.)
-* [A more extensive app example](https://github.com/NUSTEM-UK/vet/blob/main/vet.py), with some work-arounds for nasty timing collisions between MQTT stuff and GUI toolkit stuff. See lines 350 onwards, mostly.
-
-### Things to discuss
+#### Things to discuss
 
 - How does your program store state? Does it need to?
 - You're working on a Raspberry Pi, which is orders of magnitude more powerful than the Pico W and ESP8266 devices. Do you need all that power to achieve what you're doing?
